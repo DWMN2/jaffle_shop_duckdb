@@ -1,0 +1,63 @@
+models:
+  - name: stg_customers
+    description: "Primary fact table containing customer ids and details."
+    columns:
+      - name: id
+        description: "Unique identifier for the customer."
+        tests:
+          - unique
+          - not_null
+      - name: first_name
+        description: "First name of customer"
+        tests:
+          - unique
+          - not_null
+      - name: last_name
+        description: "Last name of customer"
+        tests:
+          - unique
+          - not_null
+
+  - name: stg_orders
+    description: "Dimension table containing order information by customer id"
+    columns:
+      - name: id 
+        description: "Order id"
+        tests:
+          - unique
+          - not_null
+      - name: user_id
+        description: "Customer id. Primary key to stg_customers"
+        tests:
+          - not_null
+      - name: order_date
+        description: "Date order was placed. Not necessarily when order was fulfilled"
+        tests:
+          - not_null
+      - name: status
+        description: "Status of order"
+        tests:
+          - accepted_values:
+              arguments:
+                values: ['placed','return_pending','returned','shipped','completed']
+
+  - name: stg_payments
+    description: "Dimension table for payments by orders"
+    columns:
+      - name: id 
+        description: "Payment id"
+        tests:
+          - unique
+          - not_null
+      - name: order_id
+        description: "Primary key to stg_orders"
+        tests:
+          - not_null
+      - name: payment_method
+        description: "Methods customer used to pay for orders"
+        tests:
+          - accepted_values:
+              arguments:
+                values: ['credit_card', 'coupon', 'bank_transfer', 'gift_card']
+
+    
